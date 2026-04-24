@@ -28,7 +28,7 @@ const timerIntervals = new Map();
 // Enable trust proxy for Render
 app.set('trust proxy', 1);
 
-// ============== CORS CONFIGURATION (FIXED) ==============
+// ============== CORS CONFIGURATION (FIXED - NO DUPLICATE) ==============
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
@@ -40,7 +40,6 @@ const allowedOrigins = [
 
 const corsOptions = {
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl)
     if (!origin) return callback(null, true);
     
     const isAllowed = allowedOrigins.some(allowed => {
@@ -66,7 +65,7 @@ const corsOptions = {
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
 };
 
-// Apply CORS middleware
+// Apply CORS middleware ONCE
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 
@@ -145,7 +144,7 @@ async function saveGameToDatabase(gameId, gameData) {
       });
       await game.save();
     }
-    console.log(`💾 Game ${gameId} saved`);
+    console.log(`💾 Game ${gameId} saved to database`);
     return game;
   } catch (error) {
     console.error('Error saving game:', error);
